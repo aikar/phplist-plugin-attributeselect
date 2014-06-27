@@ -88,6 +88,19 @@ class simpleattributeselect extends phplistPlugin {
                     $data['attr_value'.$attribute["id"].$i] == "1" ? 'selected="selected"': ''
                     );
             break;
+          case "textline":
+            $any = 1;
+
+            $criteria_content .= sprintf('<tr><td>%s<input type="radio" name="criteria[%d]" value="%d" %s />
+               %s</td><td><b>%s</b></td><td><input type="text" name="attr_value%d%d" value="%s"></td></tr>',
+               $attr_type,$i,$attribute["id"],
+               isset($data['criteria'][$i]) && $data['criteria'][$i] == $attribute['id'] ? 'checked="checked"': '',
+               strip_tags($attribute["name"]),s('is'),
+               $attribute["id"],$i,
+               htmlentities($data['attr_value'.$attribute["id"].$i])
+               );
+
+            break;
           case "select":
           case "radio":
           case "checkboxgroup":
@@ -208,7 +221,9 @@ class simpleattributeselect extends phplistPlugin {
               $list = array();
               if (is_array($messagedata[$values])) {
                 while (list($key,$val) = each ($messagedata[$values]))
-                  array_push($list,$val);
+                  array_push($list,"'$val'");
+              } else {
+                $list[] = "'".$messagedata[$values]."'";
               }
               $where_clause .= join(", ",$list) . ")";
           }
